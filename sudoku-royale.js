@@ -12753,7 +12753,7 @@ const DEFAULT_SETTINGS = {
   leftHanded:    false,
 };
 
-export default function App() {
+function App() {
   const [screen,    setScreen]    = useState("menu");
   const [playTab,   setPlayTab]   = useState("play");
   const [lives,     setLives]     = useState(3);
