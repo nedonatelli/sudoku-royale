@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#12897C" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Sudoku Royale" />
+  <title>Sudoku Royale</title>
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Preload font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      /* Safe area insets for notched phones */
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+    body {
+      background: #F2E8D8;
+      font-family: 'DM Sans', 'Helvetica Neue', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      user-select: none;
+    }
+    #root { height: 100%; }
+
+    /* Loading screen shown before React hydrates */
+    #splash {
+      position: fixed; inset: 0;
+      background: #F2E8D8;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px;
+      z-index: 9999;
+      transition: opacity 0.4s ease;
+    }
+    #splash.hidden { opacity: 0; pointer-events: none; }
+    #splash-emoji { font-size: 64px; }
+    #splash-title {
+      font-size: 22px; font-weight: 900;
+      color: #12897C; letter-spacing: -0.01em;
+    }
+    #splash-dots { display: flex; gap: 6px; margin-top: 8px; }
+    #splash-dots span {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #12897C; opacity: 0.3;
+      animation: pulse 1.2s ease infinite;
+    }
+    #splash-dots span:nth-child(2) { animation-delay: 0.2s; }
+    #splash-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50%       { opacity: 1;   transform: scale(1.3); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Splash screen (hidden once React renders) -->
+  <div id="splash">
+    <div id="splash-emoji">🧩</div>
+    <div id="splash-title">SUDOKU ROYALE</div>
+    <div id="splash-dots">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <div id="root"></div>
+
+  <!-- React + Babel -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- The game -->
+  <script type="text/babel" src="sudoku-royale.jsx" data-presets="react"></script>
+
+  <!-- Hide splash once React has rendered -->
+  <script>
+    // Poll for root content, hide splash when ready
+    const splash = document.getElementById('splash');
+    const check = setInterval(() => {
+      if (document.getElementById('root').children.length > 0) {
+        splash.classList.add('hidden');
+        setTimeout(() => splash.remove(), 500);
+        clearInterval(check);
+      }
+    }, 100);
+    // Failsafe — hide after 5s regardless
+    setTimeout(() => {
+      splash.classList.add('hidden');
+      clearInterval(check);
+    }, 5000);
+  </script>
+</body>
+</html>
