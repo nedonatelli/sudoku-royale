@@ -11024,6 +11024,8 @@ function WorldMap({ progress, lives, onSelectLevel, onSelectSecret, onBack }) {
           const { done, total } = worldProgress(world);
           const pct = total > 0 ? Math.round((done / total) * 100) : 0;
           const isComplete = done === total && total > 0;
+          const isArc2Start = world.id === 11;
+          const arc1Done = WORLDS.slice(0, 10).every(w => { const p = worldProgress(w); return p.done === p.total && p.total > 0; });
 
           return (
             <React.Fragment key={world.id}>
@@ -13481,4 +13483,3 @@ if (rootEl) {
   const root = ReactDOM.createRoot(rootEl);
   root.render(<App />);
 }
-
